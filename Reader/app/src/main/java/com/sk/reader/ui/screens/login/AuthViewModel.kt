@@ -47,6 +47,20 @@ class AuthViewModel @Inject constructor(private val repository: UserRepository) 
         }
     }
 
+    fun signOut() {
+        viewModelScope.launch {
+            when (val result = repository.signOut()) {
+                is ApiResult.Error -> {
+                    authState.value = AuthState.Failed(result.message)
+                }
+
+                is ApiResult.Success -> {
+                    authState.value = AuthState.SignedOut
+                }
+            }
+        }
+    }
+
     private fun createUser(name: String, surname: String) {
         viewModelScope.launch {
             val userId = repository.getCurrentUser()?.uid

@@ -59,10 +59,7 @@ fun ReaderLoginScreen(
                 navController.navigate(ReaderScreens.ReaderHomeScreen.name)
             }
 
-            AuthState.Authenticating -> {}
-            is AuthState.CreatingUser -> {}
-            is AuthState.Failed -> {}
-            AuthState.Idle -> {}
+            else -> {}
         }
     }
 

@@ -1,27 +1,40 @@
 package com.sk.reader.ui.components
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sk.reader.ui.theme.Light_Blue
+import com.sk.reader.ui.theme.Light_Red
 
 @Composable
 fun ReaderLogo(modifier: Modifier = Modifier) {
@@ -122,4 +135,46 @@ fun PasswordVisibility(passwordVisibility: MutableState<Boolean>) {
     IconButton(onClick = { passwordVisibility.value = !visible }) {
         Icons.Default.Close
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ReaderAppTopBar(
+    title: String,
+    showProfile: Boolean = true,
+    onAction: () -> Unit
+) {
+    TopAppBar(
+        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Transparent),
+        modifier = Modifier,
+        scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
+        title = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (showProfile) {
+                    Icon(
+                        imageVector = Icons.Default.Book,
+                        contentDescription = "Icon",
+                        tint = Light_Blue,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(12.dp))
+                            .scale(0.9f)
+                    )
+                }
+                Text(
+                    modifier = Modifier.padding(start = 5.dp),
+                    text = title,
+                    color = Light_Red,
+                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                )
+            }
+        },
+        actions = {
+            IconButton(onClick = {
+                onAction()
+            }) {
+                Icon(imageVector = Icons.Filled.Logout, contentDescription = "Logout")
+
+            }
+        }
+    )
 }

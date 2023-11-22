@@ -18,6 +18,10 @@ class UserRepositoryImpl(private val userRemoteDataSource: UserRemoteDataSource)
         return userRemoteDataSource.createUser(user.toFirebaseMap())
     }
 
+    override suspend fun signOut(): ApiResult<Unit> {
+        return userRemoteDataSource.signOut()
+    }
+
     override fun getCurrentUser(): FirebaseUser? {
         return userRemoteDataSource.currentUser
     }

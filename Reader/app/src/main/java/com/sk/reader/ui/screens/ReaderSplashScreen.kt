@@ -23,7 +23,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.google.firebase.auth.FirebaseAuth
 import com.sk.reader.ui.components.ReaderLogo
 import com.sk.reader.ui.navigation.ReaderScreens
 import com.sk.reader.ui.screens.login.AuthViewModel
@@ -39,12 +38,11 @@ fun ReaderSplashScreen(navController: NavController, authViewModel: AuthViewMode
             OvershootInterpolator(8f).getInterpolation(it)
         }))
         delay(2000L)
-        /* if (authViewModel.getCurrentUser()?.email.isNullOrEmpty().not()) {
-             navController.navigate(ReaderScreens.ReaderHomeScreen.name)
-         } else {
-             navController.navigate(ReaderScreens.LoginScreen.name)
-         } */
-        navController.navigate(ReaderScreens.LoginScreen.name)
+        if (authViewModel.getCurrentUser()?.email.isNullOrEmpty().not()) {
+            navController.navigate(ReaderScreens.ReaderHomeScreen.name)
+        } else {
+            navController.navigate(ReaderScreens.LoginScreen.name)
+        }
     }
 
     Surface(

@@ -45,4 +45,14 @@ class UserRemoteDataSourceImpl(
             ApiResult.Error(null, e.message ?: "General exception")
         }
     }
+
+    override suspend fun signOut(): ApiResult<Unit> {
+        return try {
+            auth.signOut()
+            return ApiResult.Success(null)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ApiResult.Error(null, e.message ?: "General exception")
+        }
+    }
 }

@@ -8,4 +8,5 @@ interface UserRemoteDataSource {
     suspend fun registerUser(email: String, password: String): ApiResult<FirebaseUser>
     suspend fun signIn(email: String, password: String): ApiResult<FirebaseUser>
     suspend fun createUser(user: MutableMap<String, Any?>): ApiResult<Unit>
+    suspend fun signOut(): ApiResult<Unit>
 }

@@ -8,5 +8,6 @@ interface UserRepository {
     suspend fun registerUser(email: String, password: String): ApiResult<FirebaseUser>
     suspend fun signIn(email: String, password: String): ApiResult<FirebaseUser>
     suspend fun createUser(user: User): ApiResult<Unit>
+    suspend fun signOut(): ApiResult<Unit>
     fun getCurrentUser(): FirebaseUser?
 }

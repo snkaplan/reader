@@ -21,7 +21,7 @@ fun ReaderNavigation(authViewModel: AuthViewModel) {
             ReaderSplashScreen(navController = navController, authViewModel = authViewModel)
         }
         composable(ReaderScreens.ReaderHomeScreen.name) {
-            ReaderHomeScreen(navController = navController)
+            ReaderHomeScreen(navController = navController, authViewModel = authViewModel)
         }
         composable(ReaderScreens.LoginScreen.name) {
             ReaderLoginScreen(navController = navController, authViewModel = authViewModel)
