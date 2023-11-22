@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "222540337373",
+    "project_id": "reader-361cc",
+    "storage_bucket": "reader-361cc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:222540337373:android:4a554e81905d4d79e14b34",
+        "android_client_info": {
+          "package_name": "com.sk.reader"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDy8SOkJeNRLaZnvSeXProlVtmv0Y8C4MU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
