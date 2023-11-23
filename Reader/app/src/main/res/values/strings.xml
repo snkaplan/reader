@@ -1,4 +1,14 @@
 <resources>
     <string name="app_name">Reader</string>
     <string name="create_acct">Please enter valid email and password that it is at least 6 characters</string>
+    <string name="app_title">Lets Read ;)</string>
+    <string name="email">Email</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="login">Login</string>
+    <string name="new_user">New User?</string>
+    <string name="name">Name</string>
+    <string name="surname">Surname</string>
+    <string name="password">Password</string>
+    <string name="create_account">Create Account</string>
+    <string name="splash_title">"Read. Change. Yourself"</string>
 </resources>

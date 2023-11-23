@@ -50,7 +50,7 @@ fun ReaderLogo(modifier: Modifier = Modifier) {
 fun EmailInput(
     modifier: Modifier = Modifier,
     emailState: MutableState<String>,
-    labelId: String = "Email",
+    labelId: String,
     enabled: Boolean = true,
     imeAction: ImeAction = ImeAction.Next,
     onAction: KeyboardActions = KeyboardActions.Default

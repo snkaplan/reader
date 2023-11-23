@@ -15,9 +15,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.sk.reader.R
 import com.sk.reader.ui.components.ReaderAppTopBar
 import com.sk.reader.ui.navigation.ReaderScreens
 import com.sk.reader.ui.screens.login.AuthState
@@ -39,7 +41,7 @@ fun ReaderHomeScreen(navController: NavController, authViewModel: AuthViewModel)
     }
     Scaffold(
         topBar = {
-            ReaderAppTopBar("A. Reader") {
+            ReaderAppTopBar(stringResource(id = R.string.app_title)) {
                 authViewModel.signOut()
             }
         },

@@ -21,8 +21,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.sk.reader.R
 import com.sk.reader.ui.components.ReaderLogo
 import com.sk.reader.ui.navigation.ReaderScreens
 import com.sk.reader.ui.screens.login.AuthViewModel
@@ -37,7 +39,7 @@ fun ReaderSplashScreen(navController: NavController, authViewModel: AuthViewMode
         scale.animateTo(0.9f, animationSpec = tween(800, easing = {
             OvershootInterpolator(8f).getInterpolation(it)
         }))
-        delay(2000L)
+        delay(1000L)
         if (authViewModel.getCurrentUser()?.email.isNullOrEmpty().not()) {
             navController.navigate(ReaderScreens.ReaderHomeScreen.name)
         } else {
@@ -62,7 +64,7 @@ fun ReaderSplashScreen(navController: NavController, authViewModel: AuthViewMode
             ReaderLogo()
             Spacer(modifier = Modifier.height(15.dp))
             Text(
-                text = "\"Read. Change. Yourself\"",
+                text = stringResource(id = R.string.splash_title),
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.LightGray
             )

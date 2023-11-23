@@ -90,8 +90,11 @@ fun ReaderLoginScreen(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val text = if (showLoginForm.value) "Sign Up" else "Login"
-                Text(text = "New User?")
+                val text =
+                    if (showLoginForm.value) stringResource(id = R.string.sign_up) else stringResource(
+                        id = R.string.login
+                    )
+                Text(text = stringResource(id = R.string.new_user))
                 Text(
                     text = text,
                     modifier = Modifier
@@ -151,14 +154,14 @@ fun UserForm(
             )
             InputField(
                 valueState = name,
-                labelId = "Name",
+                labelId = stringResource(id = R.string.name),
                 enabled = !loading,
                 onAction = KeyboardActions {
                     focusManager.moveFocus(FocusDirection.Down)
                 })
             InputField(
                 valueState = surname,
-                labelId = "Surname",
+                labelId = stringResource(id = R.string.surname),
                 enabled = !loading,
                 onAction = KeyboardActions {
                     focusManager.moveFocus(FocusDirection.Down)
@@ -167,11 +170,12 @@ fun UserForm(
         EmailInput(
             emailState = email,
             enabled = !loading,
+            labelId = stringResource(id = R.string.email),
             onAction = KeyboardActions { focusManager.moveFocus(FocusDirection.Down) })
         PasswordInput(
             modifier = Modifier,
             passwordState = password,
-            labelId = "Password",
+            labelId = stringResource(id = R.string.password),
             enabled = !loading,
             passwordVisibility = passwordVisibility,
             onAction = KeyboardActions {
@@ -185,7 +189,9 @@ fun UserForm(
             }
         )
         SubmitButton(
-            textId = if (isCreateAccount) "Create Account" else "Login",
+            textId = if (isCreateAccount) stringResource(id = R.string.create_account) else stringResource(
+                id = R.string.login
+            ),
             loading = loading,
             validInputs = valid
         ) {
