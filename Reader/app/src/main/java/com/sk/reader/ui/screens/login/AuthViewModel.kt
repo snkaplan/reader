@@ -17,7 +17,14 @@ class AuthViewModel @Inject constructor(private val repository: UserRepository) 
     var authState = MutableStateFlow<AuthState>(AuthState.Idle)
         private set
 
-    fun createUser(name: String, surname: String, email: String, password: String) {
+    fun createUser(
+        name: String,
+        surname: String,
+        quote: String?,
+        profession: String?,
+        email: String,
+        password: String
+    ) {
         viewModelScope.launch {
             authState.value = AuthState.CreatingUser()
             when (val result = repository.registerUser(email, password)) {
@@ -26,7 +33,7 @@ class AuthViewModel @Inject constructor(private val repository: UserRepository) 
                 }
 
                 is ApiResult.Success -> {
-                    createUser(name, surname)
+                    createUser(name, surname, quote, profession)
                 }
             }
         }
@@ -61,10 +68,16 @@ class AuthViewModel @Inject constructor(private val repository: UserRepository) 
         }
     }
 
-    private fun createUser(name: String, surname: String) {
+    private fun createUser(name: String, surname: String, quote: String?, profession: String?) {
         viewModelScope.launch {
             val userId = repository.getCurrentUser()?.uid
-            val user = User(uid = userId, name = name, lastName = surname)
+            val user = User(
+                uid = userId,
+                name = name,
+                lastName = surname,
+                quote = quote,
+                profession = profession
+            )
             when (val result = repository.createUser(user)) {
                 is ApiResult.Error -> {
                     authState.value = AuthState.Failed(result.message)

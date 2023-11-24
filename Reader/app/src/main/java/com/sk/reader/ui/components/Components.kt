@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -33,6 +34,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sk.reader.R
 import com.sk.reader.ui.theme.Light_Blue
 import com.sk.reader.ui.theme.Light_Red
 
@@ -40,7 +42,7 @@ import com.sk.reader.ui.theme.Light_Red
 fun ReaderLogo(modifier: Modifier = Modifier) {
     Text(
         modifier = modifier.padding(16.dp),
-        text = "A. Reader",
+        text = stringResource(id = R.string.app_title),
         style = MaterialTheme.typography.headlineLarge,
         color = Color.Red.copy(alpha = 0.5f)
     )

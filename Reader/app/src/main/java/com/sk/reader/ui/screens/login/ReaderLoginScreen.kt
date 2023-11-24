@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -29,7 +28,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -38,11 +36,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.sk.reader.R
-import com.sk.reader.ui.components.EmailInput
-import com.sk.reader.ui.components.InputField
-import com.sk.reader.ui.components.PasswordInput
 import com.sk.reader.ui.components.ReaderLogo
 import com.sk.reader.ui.navigation.ReaderScreens
+import com.sk.reader.ui.screens.login.components.LoginForm
+import com.sk.reader.ui.screens.login.components.SignUpForm
 
 @Composable
 fun ReaderLoginScreen(
@@ -73,15 +70,16 @@ fun ReaderLoginScreen(
                 UserForm(
                     loading = authState is AuthState.Authenticating || authState is AuthState.CreatingUser,
                     isCreateAccount = false
-                ) { _, _, email, password ->
+                ) { _, _, _, _, email, password ->
                     authViewModel.signIn(email, password)
                 }
             } else {
                 UserForm(
+                    modifier = Modifier.weight(1f, false),
                     loading = authState is AuthState.Authenticating || authState is AuthState.CreatingUser,
                     isCreateAccount = true
-                ) { name, surname, email, password ->
-                    authViewModel.createUser(name, surname, email, password)
+                ) { name, surname, quote, profession, email, password ->
+                    authViewModel.createUser(name, surname, quote, profession, email, password)
                 }
             }
             Spacer(modifier = Modifier.height(15.dp))
@@ -111,9 +109,10 @@ fun ReaderLoginScreen(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun UserForm(
+    modifier: Modifier = Modifier,
     loading: Boolean = false,
     isCreateAccount: Boolean = false,
-    onDone: (String, String, String, String) -> Unit
+    onDone: (String, String, String, String, String, String) -> Unit
 ) {
     val name = rememberSaveable {
         mutableStateOf("")
@@ -121,14 +120,17 @@ fun UserForm(
     val surname = rememberSaveable {
         mutableStateOf("")
     }
+    val quote = rememberSaveable {
+        mutableStateOf("")
+    }
+    val profession = rememberSaveable {
+        mutableStateOf("")
+    }
     val email = rememberSaveable {
         mutableStateOf("")
     }
     val password = rememberSaveable {
         mutableStateOf("")
-    }
-    val passwordVisibility = rememberSaveable {
-        mutableStateOf(false)
     }
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -142,52 +144,16 @@ fun UserForm(
             mailPwValidation
         }
     }
-    val modifier = Modifier
-        .height(250.dp)
-        .background(MaterialTheme.colorScheme.background)
-        .verticalScroll(rememberScrollState())
-    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         if (isCreateAccount) {
-            Text(
-                text = stringResource(id = R.string.create_acct),
-                modifier = Modifier.padding(4.dp)
-            )
-            InputField(
-                valueState = name,
-                labelId = stringResource(id = R.string.name),
-                enabled = !loading,
-                onAction = KeyboardActions {
-                    focusManager.moveFocus(FocusDirection.Down)
-                })
-            InputField(
-                valueState = surname,
-                labelId = stringResource(id = R.string.surname),
-                enabled = !loading,
-                onAction = KeyboardActions {
-                    focusManager.moveFocus(FocusDirection.Down)
-                })
+            SignUpForm(name, surname, quote, profession, focusManager, loading)
         }
-        EmailInput(
-            emailState = email,
-            enabled = !loading,
-            labelId = stringResource(id = R.string.email),
-            onAction = KeyboardActions { focusManager.moveFocus(FocusDirection.Down) })
-        PasswordInput(
-            modifier = Modifier,
-            passwordState = password,
-            labelId = stringResource(id = R.string.password),
-            enabled = !loading,
-            passwordVisibility = passwordVisibility,
-            onAction = KeyboardActions {
-                if (!valid) return@KeyboardActions
-                onDone(
-                    name.value.trim(),
-                    surname.value.trim(),
-                    email.value.trim(),
-                    password.value.trim()
-                )
-            }
-        )
+        LoginForm(email, password, focusManager, loading)
         SubmitButton(
             textId = if (isCreateAccount) stringResource(id = R.string.create_account) else stringResource(
                 id = R.string.login
@@ -198,6 +164,8 @@ fun UserForm(
             onDone(
                 name.value.trim(),
                 surname.value.trim(),
+                quote.value.trim(),
+                profession.value.trim(),
                 email.value.trim(),
                 password.value.trim()
             )
