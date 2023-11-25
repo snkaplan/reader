@@ -13,4 +13,7 @@
     <string name="password">Password</string>
     <string name="create_account">Create Account</string>
     <string name="splash_title">"Read. Change. Yourself"</string>
+    <string name="reading_now_title">Your Reading\n activity right now..</string>
+    <string name="reading_list_title">Reading List</string>
+    <string name="not_available">N/A</string>
 </resources>
