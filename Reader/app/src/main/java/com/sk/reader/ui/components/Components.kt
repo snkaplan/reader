@@ -1,20 +1,36 @@
 package com.sk.reader.ui.components
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -25,16 +41,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.sk.reader.R
+import com.sk.reader.model.Book
 import com.sk.reader.ui.theme.Light_Blue
 import com.sk.reader.ui.theme.Light_Red
 
@@ -174,9 +196,157 @@ fun ReaderAppTopBar(
             IconButton(onClick = {
                 onAction()
             }) {
-                Icon(imageVector = Icons.Filled.Logout, contentDescription = "Logout")
+                Icon(
+                    imageVector = Icons.Filled.Logout,
+                    contentDescription = "Logout",
+                    tint = Color.Green.copy(alpha = 0.4f)
+                )
 
             }
         }
     )
+}
+
+@Composable
+fun TitleSection(modifier: Modifier = Modifier, label: String) {
+    Surface(modifier = modifier.padding(start = 5.dp, top = 1.dp)) {
+        Column {
+            Text(
+                text = label,
+                fontSize = 19.sp,
+                textAlign = TextAlign.Left,
+                style = TextStyle(fontStyle = FontStyle.Normal)
+            )
+        }
+    }
+}
+
+@Composable
+fun FABContent(onTap: () -> Unit) {
+    FloatingActionButton(
+        onClick = { onTap() },
+        shape = RoundedCornerShape(50.dp),
+        containerColor = Light_Blue
+    ) {
+        Icon(
+            imageVector = Icons.Default.Add,
+            contentDescription = "Add a Book",
+            tint = Color.White
+        )
+    }
+}
+
+
+@Composable
+fun BookRating(score: Double) {
+    Surface(
+        modifier = Modifier
+            .height(70.dp)
+            .padding(4.dp),
+        shape = RoundedCornerShape(56.dp),
+        shadowElevation = 6.dp,
+        color = Color.White
+    ) {
+        Column(modifier = Modifier.padding(4.dp)) {
+            Icon(
+                imageVector = Icons.Filled.StarBorder,
+                contentDescription = "Star",
+                modifier = Modifier.padding(3.dp)
+            )
+            Text(text = score.toString(), style = MaterialTheme.typography.titleSmall)
+        }
+    }
+}
+
+@Composable
+fun ListCard(
+    book: Book = Book("asf", "Running", "Me and you", "Hello World"),
+    onClickDetails: (String) -> Unit = {}
+) {
+    val context = LocalContext.current
+    val resources = context.resources
+    val displayMetrics = resources.displayMetrics
+    val screenWidth = displayMetrics.widthPixels / displayMetrics.density
+    val spacing = 10.dp
+    Card(
+        shape = RoundedCornerShape(30.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 6.dp),
+        modifier = Modifier
+            .padding(16.dp)
+            .height(242.dp)
+            .width(202.dp)
+            .clickable { onClickDetails.invoke(book.title.toString()) }
+    ) {
+        Column(
+            modifier = Modifier.width(screenWidth.dp - (spacing * 2)),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Row(horizontalArrangement = Arrangement.Center) {
+                Image(
+                    modifier = Modifier
+                        .height(140.dp)
+                        .width(100.dp)
+                        .padding(4.dp),
+                    painter = rememberAsyncImagePainter(model = "https://cdn-icons-png.flaticon.com/512/104/104098.png"),
+                    contentDescription = "Book Image"
+                )
+                Spacer(modifier = Modifier.width(50.dp))
+                Column(
+                    modifier = Modifier.padding(top = 25.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.FavoriteBorder,
+                        contentDescription = "Fav Icon",
+                        modifier = Modifier.padding(bottom = 1.dp)
+                    )
+                    BookRating(score = 3.5)
+                }
+            }
+            Text(
+                text = book.title.toString(), modifier = Modifier.padding(4.dp),
+                fontWeight = FontWeight.Bold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Text(
+                text = book.authors.toString(), modifier = Modifier.padding(4.dp),
+                style = MaterialTheme.typography.labelSmall
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.Bottom
+        ) {
+            RoundedButton("Reading", radius = 70)
+        }
+    }
+}
+
+@Composable
+fun RoundedButton(label: String = "Reading", radius: Int = 30, onClick: () -> Unit = {}) {
+    Surface(
+        modifier = Modifier.clip(
+            RoundedCornerShape(
+                bottomEndPercent = radius,
+                topStartPercent = radius
+            )
+        ),
+        color = Color(0XFF92CBDF)
+    ) {
+        Column(
+            modifier = Modifier
+                .width(90.dp)
+                .heightIn(40.dp)
+                .clickable { onClick.invoke() },
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = label, style = TextStyle(color = Color.White, fontSize = 15.sp))
+        }
+    }
 }
