@@ -25,4 +25,8 @@ class UserRepositoryImpl(private val userRemoteDataSource: UserRemoteDataSource)
     override fun getCurrentUser(): FirebaseUser? {
         return userRemoteDataSource.currentUser
     }
+
+    override suspend fun getUser(): ApiResult<Map<String, Any?>> {
+        return userRemoteDataSource.getUser()
+    }
 }

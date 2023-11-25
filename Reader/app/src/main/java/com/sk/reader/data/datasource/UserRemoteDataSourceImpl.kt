@@ -46,6 +46,20 @@ class UserRemoteDataSourceImpl(
         }
     }
 
+    override suspend fun getUser(): ApiResult<Map<String, Any?>> {
+        return try {
+            val result = firebaseFirestore.collection(USERS_TABLE_NAME)
+                .whereEqualTo("user_id", currentUser?.uid).get().await()
+            if (result.documents.isEmpty().not()) {
+                return ApiResult.Success(result.documents[0].data)
+            }
+            return ApiResult.Success(null)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ApiResult.Error(null, e.message ?: "General exception")
+        }
+    }
+
     override suspend fun signOut(): ApiResult<Unit> {
         return try {
             auth.signOut()

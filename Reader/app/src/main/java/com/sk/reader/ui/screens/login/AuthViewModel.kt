@@ -14,6 +14,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(private val repository: UserRepository) :
     ViewModel() {
+    var user = MutableStateFlow<User?>(null)
+        private set
     var authState = MutableStateFlow<AuthState>(AuthState.Idle)
         private set
 
@@ -48,6 +50,7 @@ class AuthViewModel @Inject constructor(private val repository: UserRepository) 
                 }
 
                 is ApiResult.Success -> {
+                    getUser()
                     authState.value = AuthState.Authenticated(result.data.toString())
                 }
             }
@@ -84,6 +87,7 @@ class AuthViewModel @Inject constructor(private val repository: UserRepository) 
                 }
 
                 is ApiResult.Success -> {
+                    getUser()
                     authState.value = AuthState.Authenticated(result.data.toString())
                 }
             }
@@ -92,5 +96,18 @@ class AuthViewModel @Inject constructor(private val repository: UserRepository) 
 
     fun getCurrentUser(): FirebaseUser? {
         return repository.getCurrentUser()
+    }
+
+    fun getUser() {
+        viewModelScope.launch {
+            when (val result = repository.getUser()) {
+                is ApiResult.Error -> {
+                }
+
+                is ApiResult.Success -> {
+                    user.value = result.data?.let { User.fromFirebaseMap(it) }
+                }
+            }
+        }
     }
 }

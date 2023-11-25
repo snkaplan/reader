@@ -10,4 +10,5 @@ interface UserRepository {
     suspend fun createUser(user: User): ApiResult<Unit>
     suspend fun signOut(): ApiResult<Unit>
     fun getCurrentUser(): FirebaseUser?
+    suspend fun getUser(): ApiResult<Map<String, Any?>>
 }

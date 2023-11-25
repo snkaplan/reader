@@ -34,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.sk.reader.R
 import com.sk.reader.model.Book
+import com.sk.reader.model.User
 import com.sk.reader.ui.components.FABContent
 import com.sk.reader.ui.components.ListCard
 import com.sk.reader.ui.components.ReaderAppTopBar
@@ -46,6 +47,7 @@ import com.sk.reader.ui.screens.login.AuthViewModel
 @Composable
 fun ReaderHomeScreen(navController: NavController, authViewModel: AuthViewModel) {
     val authState: AuthState by authViewModel.authState.collectAsStateWithLifecycle()
+    val userState: User? by authViewModel.user.collectAsStateWithLifecycle()
     LaunchedEffect(authState) {
         when (authState) {
             is AuthState.SignedOut -> {
@@ -67,7 +69,7 @@ fun ReaderHomeScreen(navController: NavController, authViewModel: AuthViewModel)
         Surface(
             modifier = Modifier.padding(it)
         ) {
-            HomeContent(navController, authViewModel.getCurrentUser()?.displayName)
+            HomeContent(navController, userState?.name)
         }
     }
 }

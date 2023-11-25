@@ -41,6 +41,7 @@ fun ReaderSplashScreen(navController: NavController, authViewModel: AuthViewMode
         }))
         delay(1000L)
         if (authViewModel.getCurrentUser()?.email.isNullOrEmpty().not()) {
+            authViewModel.getUser()
             navController.navigate(ReaderScreens.ReaderHomeScreen.name) {
                 popUpTo(ReaderScreens.SplashScreen.name) {
                     inclusive = true
