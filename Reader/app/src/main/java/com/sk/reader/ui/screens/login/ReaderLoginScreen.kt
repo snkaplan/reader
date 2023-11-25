@@ -53,7 +53,11 @@ fun ReaderLoginScreen(
     LaunchedEffect(authState) {
         when (authState) {
             is AuthState.Authenticated -> {
-                navController.navigate(ReaderScreens.ReaderHomeScreen.name)
+                navController.navigate(ReaderScreens.ReaderHomeScreen.name) {
+                    popUpTo(ReaderScreens.SplashScreen.name) {
+                        inclusive = true
+                    }
+                }
             }
 
             else -> {}

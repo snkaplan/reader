@@ -6,11 +6,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -35,13 +35,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
@@ -123,7 +124,7 @@ fun FABContent(onTap: () -> Unit) {
 
 @Composable
 fun TitleItem(modifier: Modifier = Modifier, label: String) {
-    Surface(modifier = modifier.padding(start = 5.dp, top = 1.dp)) {
+    Surface(modifier = modifier.padding(start = 5.dp)) {
         Column {
             Text(
                 text = label,
@@ -136,67 +137,66 @@ fun TitleItem(modifier: Modifier = Modifier, label: String) {
 }
 
 @Composable
-fun ListCard(book: Book, onClickDetails: (String) -> Unit) {
-    val context = LocalContext.current
-    val resources = context.resources
-    val displayMetrics = resources.displayMetrics
-    val screenWidth = displayMetrics.widthPixels / displayMetrics.density
-    val spacing = 10.dp
+@Preview
+fun ListCard(
+    book: Book = Book(
+        id = "dadfa",
+        title = "Hello Again",
+        authors = "All of us",
+        notes = null
+    ), cardRadius: Dp = 30.dp, onClickDetails: (String) -> Unit = {}
+) {
     Card(
-        shape = RoundedCornerShape(30.dp),
+        shape = RoundedCornerShape(cardRadius),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 6.dp),
         modifier = Modifier
-            .padding(16.dp)
-            .height(242.dp)
-            .width(202.dp)
+            .wrapContentSize()
             .clickable { onClickDetails.invoke(book.title.toString()) }
     ) {
-        Column(
-            modifier = Modifier.width(screenWidth.dp - (spacing * 2)),
-            horizontalAlignment = Alignment.Start
-        ) {
-            Row(horizontalArrangement = Arrangement.Center) {
+        Column(horizontalAlignment = Alignment.Start) {
+            Row(modifier = Modifier.padding(10.dp), horizontalArrangement = Arrangement.Center) {
                 Image(
                     modifier = Modifier
-                        .height(140.dp)
                         .width(100.dp)
+                        .height(140.dp)
                         .padding(4.dp),
                     painter = rememberAsyncImagePainter(model = "https://cdn-icons-png.flaticon.com/512/104/104098.png"),
                     contentDescription = "Book Image"
                 )
                 Spacer(modifier = Modifier.width(50.dp))
                 Column(
-                    modifier = Modifier.padding(top = 25.dp),
+                    modifier = Modifier
+                        .wrapContentSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.FavoriteBorder,
-                        contentDescription = "Fav Icon",
-                        modifier = Modifier.padding(bottom = 1.dp)
+                        contentDescription = "Fav Icon"
                     )
                     RatingItem(score = 3.5)
                 }
             }
-            Text(
-                text = book.title.toString(), modifier = Modifier.padding(4.dp),
-                fontWeight = FontWeight.Bold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            Text(
-                text = book.authors.toString(), modifier = Modifier.padding(4.dp),
-                style = MaterialTheme.typography.labelSmall
-            )
-        }
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.Bottom
-        ) {
-            RoundedButton("Reading", radius = 70)
+            Column(modifier = Modifier.padding(10.dp)) {
+                Text(
+                    text = book.title.toString(),
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = book.authors.toString(),
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
+            Row(
+                modifier = Modifier.align(Alignment.End),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                RoundedButton("Reading", radius = 70)
+            }
         }
     }
 }
@@ -204,14 +204,15 @@ fun ListCard(book: Book, onClickDetails: (String) -> Unit) {
 @Composable
 fun RatingItem(score: Double) {
     Surface(
-        modifier = Modifier
-            .height(70.dp)
-            .padding(4.dp),
+        modifier = Modifier.padding(top = 4.dp),
         shape = RoundedCornerShape(56.dp),
         shadowElevation = 6.dp,
         color = Color.White
     ) {
-        Column(modifier = Modifier.padding(4.dp)) {
+        Column(
+            modifier = Modifier.padding(4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Icon(
                 imageVector = Icons.Filled.StarBorder,
                 contentDescription = "Star",

@@ -1,15 +1,17 @@
 package com.sk.reader.ui.screens.home
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -71,8 +74,9 @@ fun ReaderHomeScreen(navController: NavController, authViewModel: AuthViewModel)
 
 @Composable
 fun HomeContent(navController: NavController, currentUser: String?) {
+    val scrollState = rememberScrollState()
     Column(
-        modifier = Modifier.padding(2.dp),
+        modifier = Modifier.verticalScroll(scrollState),
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Row(
@@ -80,7 +84,10 @@ fun HomeContent(navController: NavController, currentUser: String?) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             TitleItem(label = stringResource(id = R.string.reading_now_title))
-            Column(modifier = Modifier.padding(end = 5.dp)) {
+            Column(
+                modifier = Modifier.padding(end = 5.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Icon(
                     imageVector = Icons.Filled.AccountCircle,
                     contentDescription = "Profile",
@@ -92,7 +99,6 @@ fun HomeContent(navController: NavController, currentUser: String?) {
                     tint = MaterialTheme.colorScheme.secondaryContainer)
                 Text(
                     text = currentUser ?: stringResource(id = R.string.not_available),
-                    modifier = Modifier.padding(end = 2.dp),
                     style = MaterialTheme.typography.labelSmall,
                     color = Color.Red,
                     fontSize = 15.sp,
@@ -101,37 +107,32 @@ fun HomeContent(navController: NavController, currentUser: String?) {
                 )
             }
         }
-        ReadingRightNowArea(books = listOf(), navController = navController)
+        ReadingRightNowArea(books = dummyBooks(), navController = navController)
         TitleItem(label = stringResource(id = R.string.reading_list_title))
-        BookListArea(listOfBook = dummyBooks(), navController = navController)
-    }
-}
-
-@Composable
-fun BookListArea(listOfBook: List<Book>, navController: NavController) {
-    HorizontalScrollableComponent(listOfBook) {
-        // TODO Go to book detail
-    }
-}
-
-@Composable
-fun HorizontalScrollableComponent(listOfBook: List<Book>, onCardClicked: (String) -> Unit) {
-    val scrollState = rememberScrollState()
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(280.dp)
-            .horizontalScroll(scrollState)
-    ) {
-        listOfBook.forEach {
-            ListCard(it) { id -> onCardClicked.invoke(id) }
-        }
+        ReadingListArea(books = dummyBooks(), navController = navController)
     }
 }
 
 @Composable
 fun ReadingRightNowArea(books: List<Book>, navController: NavController) {
-    ListCard(dummyBooks()[0]) {}
+    HorizontalScrollableComponent(books) {}
+}
+
+@Composable
+fun ReadingListArea(books: List<Book>, navController: NavController) {
+    HorizontalScrollableComponent(books) {}
+}
+
+@Composable
+fun HorizontalScrollableComponent(listOfBook: List<Book>, onCardClicked: (String) -> Unit) {
+    LazyRow(
+        contentPadding = PaddingValues(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(listOfBook) {
+            ListCard(it) { id -> onCardClicked.invoke(id) }
+        }
+    }
 }
 
 private fun dummyBooks(): List<Book> {
