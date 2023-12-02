@@ -14,6 +14,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Book
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -59,12 +61,16 @@ fun ReaderHomeScreen(navController: NavController, authViewModel: AuthViewModel)
     }
     Scaffold(
         topBar = {
-            ReaderAppTopBar(stringResource(id = R.string.app_title)) {
-                authViewModel.signOut()
-            }
+            ReaderAppTopBar(
+                stringResource(id = R.string.app_title),
+                leftIcon = Icons.Default.Book,
+                rightIcon = Icons.Filled.Logout,
+                onRightIconClicked = { authViewModel.signOut() })
         },
         floatingActionButton = {
-            FABContent {}
+            FABContent {
+                navController.navigate(ReaderScreens.SearchScreen.name)
+            }
         }) {
         Surface(
             modifier = Modifier.padding(it)
@@ -139,10 +145,10 @@ fun HorizontalScrollableComponent(listOfBook: List<Book>, onCardClicked: (String
 
 private fun dummyBooks(): List<Book> {
     return listOf(
-        Book(id = "dadfa", title = "Hello Again", authors = "All of us", notes = null),
-        Book(id = "dadfa", title = " Again", authors = "All of us", notes = null),
-        Book(id = "dadfa", title = "Hello ", authors = "The world us", notes = null),
-        Book(id = "dadfa", title = "Hello Again", authors = "All of us", notes = null),
-        Book(id = "dadfa", title = "Hello Again", authors = "All of us", notes = null)
+        Book(id = "dadfa", title = "Hello Again", authors = "All of us", notes = "null", "", "", ""),
+        Book(id = "dadfa", title = " Again", authors = "All of us", notes = "null", "", "", ""),
+        Book(id = "dadfa", title = "Hello ", authors = "The world us", notes = "null", "", "", ""),
+        Book(id = "dadfa", title = "Hello Again", authors = "All of us", notes = "null", "", "", ""),
+        Book(id = "dadfa", title = "Hello Again", authors = "All of us", notes = "null", "", "", "")
     )
 }

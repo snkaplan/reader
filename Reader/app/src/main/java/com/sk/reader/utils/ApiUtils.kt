@@ -9,19 +9,19 @@ import kotlin.coroutines.resumeWithException
 
 suspend fun <T : Any> handleApi(
     execute: suspend () -> Response<T>
-): ApiResult<T> {
+): Resource<T> {
     return try {
         val response = execute()
         val body = response.body()
         if (response.isSuccessful && body != null) {
-            ApiResult.Success(body)
+            Resource.Success(body)
         } else {
-            ApiResult.Error(message = response.message())
+            Resource.Error(message = response.message())
         }
     } catch (e: HttpException) {
-        ApiResult.Error(message = e.message())
+        Resource.Error(message = e.message())
     } catch (e: Throwable) {
-        ApiResult.Error(message = e.message ?: "General Exception")
+        Resource.Error(message = e.message ?: "General Exception")
     }
 }
 
@@ -38,10 +38,10 @@ suspend fun <T> Task<T>.await(): T {
     }
 }
 
-sealed class ApiResult<T>(
+sealed class Resource<T>(
     val data: T? = null,
     val message: String? = null
 ) {
-    class Success<T>(data: T?) : ApiResult<T>(data)
-    class Error<T>(data: T? = null, message: String) : ApiResult<T>(data, message)
+    class Success<T>(data: T?) : Resource<T>(data)
+    class Error<T>(data: T? = null, message: String) : Resource<T>(data, message)
 }

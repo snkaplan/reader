@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material.icons.rounded.FavoriteBorder
@@ -35,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -65,8 +65,12 @@ fun ReaderLogo(modifier: Modifier = Modifier) {
 @Composable
 fun ReaderAppTopBar(
     title: String,
-    showProfile: Boolean = true,
-    onAction: () -> Unit
+    leftIcon: ImageVector? = null,
+    leftIconTint: Color = Light_Blue,
+    rightIcon: ImageVector? = null,
+    rightIconTint: Color = Color.Green.copy(alpha = 0.4f),
+    onRightIconClicked: (() -> Unit)? = null,
+    onLeftIconClicked: (() -> Unit)? = null
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Transparent),
@@ -74,14 +78,17 @@ fun ReaderAppTopBar(
         scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                if (showProfile) {
+                if (leftIcon != null) {
                     Icon(
-                        imageVector = Icons.Default.Book,
+                        imageVector = leftIcon,
                         contentDescription = "Icon",
-                        tint = Light_Blue,
+                        tint = leftIconTint,
                         modifier = Modifier
                             .clip(RoundedCornerShape(12.dp))
                             .scale(0.9f)
+                            .clickable {
+                                onLeftIconClicked?.invoke()
+                            }
                     )
                 }
                 Text(
@@ -93,15 +100,16 @@ fun ReaderAppTopBar(
             }
         },
         actions = {
-            IconButton(onClick = {
-                onAction()
-            }) {
-                Icon(
-                    imageVector = Icons.Filled.Logout,
-                    contentDescription = "Logout",
-                    tint = Color.Green.copy(alpha = 0.4f)
-                )
-
+            if (rightIcon != null) {
+                IconButton(onClick = {
+                    onRightIconClicked?.invoke()
+                }) {
+                    Icon(
+                        imageVector = rightIcon,
+                        contentDescription = "Logout",
+                        tint = rightIconTint
+                    )
+                }
             }
         }
     )
@@ -137,14 +145,8 @@ fun TitleItem(modifier: Modifier = Modifier, label: String) {
 }
 
 @Composable
-@Preview
 fun ListCard(
-    book: Book = Book(
-        id = "dadfa",
-        title = "Hello Again",
-        authors = "All of us",
-        notes = null
-    ), cardRadius: Dp = 30.dp, onClickDetails: (String) -> Unit = {}
+    book: Book, cardRadius: Dp = 30.dp, onClickDetails: (String) -> Unit = {}
 ) {
     Card(
         shape = RoundedCornerShape(cardRadius),
@@ -152,7 +154,7 @@ fun ListCard(
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 6.dp),
         modifier = Modifier
             .wrapContentSize()
-            .clickable { onClickDetails.invoke(book.title.toString()) }
+            .clickable { onClickDetails.invoke(book.title) }
     ) {
         Column(horizontalAlignment = Alignment.Start) {
             Row(modifier = Modifier.padding(10.dp), horizontalArrangement = Arrangement.Center) {
@@ -161,7 +163,7 @@ fun ListCard(
                         .width(100.dp)
                         .height(140.dp)
                         .padding(4.dp),
-                    painter = rememberAsyncImagePainter(model = "https://cdn-icons-png.flaticon.com/512/104/104098.png"),
+                    painter = rememberAsyncImagePainter(model = book.photoURl),
                     contentDescription = "Book Image"
                 )
                 Spacer(modifier = Modifier.width(50.dp))

@@ -16,4 +16,5 @@
     <string name="reading_now_title">Your Reading\n activity right now..</string>
     <string name="reading_list_title">Reading List</string>
     <string name="not_available">N/A</string>
+    <string name="search_screen_title">Search Books</string>
 </resources>
