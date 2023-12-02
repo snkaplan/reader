@@ -11,9 +11,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchViewModel @Inject constructor(private val searchRepository: SearchRepository) : ViewModel() {
+class SearchViewModel @Inject constructor(private val searchRepository: SearchRepository) :
+    ViewModel() {
     var searchState = MutableStateFlow<SearchScreenState>(SearchScreenState.Idle)
         private set
+
+    init {
+        searchBooks("Android")
+    }
 
     fun searchBooks(searchQuery: String) {
         viewModelScope.launch {
@@ -24,7 +29,8 @@ class SearchViewModel @Inject constructor(private val searchRepository: SearchRe
                 }
 
                 is Resource.Success -> {
-                    searchState.value = SearchScreenState.Success(result.data?.toBookList().orEmpty())
+                    searchState.value =
+                        SearchScreenState.Success(result.data?.toBookList().orEmpty())
                 }
             }
         }

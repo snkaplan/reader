@@ -2,11 +2,15 @@ package com.sk.reader.di
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.sk.reader.data.datasource.book.BookRemoteDataSource
+import com.sk.reader.data.datasource.book.BookRemoteDataSourceImpl
 import com.sk.reader.data.datasource.search.SearchRemoteDataSource
 import com.sk.reader.data.datasource.search.SearchRemoteDataSourceImpl
 import com.sk.reader.data.datasource.user.UserRemoteDataSource
 import com.sk.reader.data.datasource.user.UserRemoteDataSourceImpl
 import com.sk.reader.data.network.BooksApi
+import com.sk.reader.data.repository.book.BookRepository
+import com.sk.reader.data.repository.book.BookRepositoryImpl
 import com.sk.reader.data.repository.search.SearchRepository
 import com.sk.reader.data.repository.search.SearchRepositoryImpl
 import com.sk.reader.data.repository.user.UserRepository
@@ -68,5 +72,17 @@ object AppModule {
     @Provides
     fun provideSearchRemoteDataSource(booksApi: BooksApi): SearchRemoteDataSource {
         return SearchRemoteDataSourceImpl(booksApi)
+    }
+
+    @Singleton
+    @Provides
+    fun provideBookRepository(bookRemoteDataSource: BookRemoteDataSource): BookRepository {
+        return BookRepositoryImpl(bookRemoteDataSource)
+    }
+
+    @Singleton
+    @Provides
+    fun provideBookRemoteDataSource(booksApi: BooksApi): BookRemoteDataSource {
+        return BookRemoteDataSourceImpl(booksApi)
     }
 }

@@ -49,6 +49,7 @@ import com.sk.reader.R
 import com.sk.reader.model.Book
 import com.sk.reader.ui.components.InputField
 import com.sk.reader.ui.components.ReaderAppTopBar
+import com.sk.reader.ui.navigation.ReaderScreens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -100,7 +101,6 @@ fun ReaderBookSearchScreen(
 
 @Composable
 fun BookList(navController: NavController, books: List<Book>) {
-    println("Rerendering booklistt")
     LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp)) {
         items(items = books) { book ->
             BookRowItem(book, navController)
@@ -111,7 +111,9 @@ fun BookList(navController: NavController, books: List<Book>) {
 @Composable
 fun BookRowItem(book: Book, navController: NavController) {
     Card(modifier = Modifier
-        .clickable { }
+        .clickable {
+            navController.navigate(ReaderScreens.DetailScreen.name + "/${book.id}")
+        }
         .fillMaxWidth()
         .padding(3.dp),
         shape = RectangleShape,
@@ -119,7 +121,7 @@ fun BookRowItem(book: Book, navController: NavController) {
         colors = CardDefaults.cardColors(containerColor = Color.White)) {
         Row(modifier = Modifier.padding(5.dp), verticalAlignment = Alignment.Top) {
             Image(
-                painter = rememberAsyncImagePainter(model = book.photoURl),
+                painter = rememberAsyncImagePainter(model = book.thumbnail),
                 contentDescription = "Book image",
                 modifier = Modifier
                     .width(80.dp)

@@ -1,9 +1,11 @@
 package com.sk.reader.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.sk.reader.ui.screens.ReaderSplashScreen
 import com.sk.reader.ui.screens.details.ReaderBookDetailsScreen
 import com.sk.reader.ui.screens.home.ReaderHomeScreen
@@ -32,8 +34,13 @@ fun ReaderNavigation(authViewModel: AuthViewModel) {
         composable(ReaderScreens.SearchScreen.name) {
             ReaderBookSearchScreen(navController = navController)
         }
-        composable(ReaderScreens.DetailScreen.name) {
-            ReaderBookDetailsScreen(navController = navController)
+        val detailName = ReaderScreens.DetailScreen.name
+        composable("$detailName/{bookId}", arguments = listOf(navArgument("bookId") {
+            type = NavType.StringType
+        })) { backStackEntry ->
+            backStackEntry.arguments?.getString("bookId")?.let {
+                ReaderBookDetailsScreen(navController = navController, bookId = it)
+            }
         }
         composable(ReaderScreens.UpdateScreen.name) {
             ReaderBookUpdateScreen(navController = navController)

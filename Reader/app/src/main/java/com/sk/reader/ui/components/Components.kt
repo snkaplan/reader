@@ -163,7 +163,7 @@ fun ListCard(
                         .width(100.dp)
                         .height(140.dp)
                         .padding(4.dp),
-                    painter = rememberAsyncImagePainter(model = book.photoURl),
+                    painter = rememberAsyncImagePainter(model = book.thumbnail),
                     contentDescription = "Book Image"
                 )
                 Spacer(modifier = Modifier.width(50.dp))

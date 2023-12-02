@@ -115,9 +115,9 @@ fun HomeContent(navController: NavController, currentUser: String?) {
                 )
             }
         }
-        ReadingRightNowArea(books = dummyBooks(), navController = navController)
+        ReadingRightNowArea(books = emptyList(), navController = navController)
         TitleItem(label = stringResource(id = R.string.reading_list_title))
-        ReadingListArea(books = dummyBooks(), navController = navController)
+        ReadingListArea(books = emptyList(), navController = navController)
     }
 }
 
@@ -141,14 +141,4 @@ fun HorizontalScrollableComponent(listOfBook: List<Book>, onCardClicked: (String
             ListCard(it) { id -> onCardClicked.invoke(id) }
         }
     }
-}
-
-private fun dummyBooks(): List<Book> {
-    return listOf(
-        Book(id = "dadfa", title = "Hello Again", authors = "All of us", notes = "null", "", "", ""),
-        Book(id = "dadfa", title = " Again", authors = "All of us", notes = "null", "", "", ""),
-        Book(id = "dadfa", title = "Hello ", authors = "The world us", notes = "null", "", "", ""),
-        Book(id = "dadfa", title = "Hello Again", authors = "All of us", notes = "null", "", "", ""),
-        Book(id = "dadfa", title = "Hello Again", authors = "All of us", notes = "null", "", "", "")
-    )
 }
