@@ -4,35 +4,76 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sk.reader.data.dto.bookdto.toBook
 import com.sk.reader.data.repository.book.BookRepository
+import com.sk.reader.data.repository.user.UserRepository
+import com.sk.reader.model.MBook
 import com.sk.reader.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class BookDetailsViewModel @Inject constructor(private val bookRepository: BookRepository) :
+class BookDetailsViewModel @Inject constructor(
+    private val bookRepository: BookRepository,
+    private val userRepository: UserRepository
+) :
     ViewModel() {
-    var bookState = MutableStateFlow<BookDetailsScreenState>(BookDetailsScreenState.Idle)
+    var uiState = MutableStateFlow(BookDetailsScreenState())
+        private set
+    var errorFlow = MutableSharedFlow<String>()
         private set
 
     fun getBook(id: String) {
         viewModelScope.launch {
+            uiState.value = uiState.value.copy(isLoading = true)
             when (val result = bookRepository.getBook(id)) {
                 is Resource.Error -> {
-                    bookState.value = BookDetailsScreenState.Error(result.message.orEmpty())
+                    uiState.value = uiState.value.copy(isLoading = false)
                 }
 
                 is Resource.Success -> {
                     result.data?.toBook()?.let {
-                        bookState.value =
-                            BookDetailsScreenState.Success(it)
+                        uiState.value = uiState.value.copy(isLoading = false, book = it)
                     } ?: kotlin.run {
-                        bookState.value =
-                            BookDetailsScreenState.Error("Error happened try later :/")
+                        onError("Error happened try later :/")
                     }
                 }
             }
         }
+    }
+
+    fun saveBook() {
+        viewModelScope.launch {
+            uiState.value.book?.let { safeBook ->
+                uiState.value = uiState.value.copy(isLoading = true)
+                val bookToSave = MBook(
+                    title = safeBook.title,
+                    authors = safeBook.authors,
+                    description = safeBook.description,
+                    thumbnail = safeBook.thumbnail,
+                    smallThumbnail = safeBook.smallThumbnail,
+                    publishedDate = safeBook.publishedDate,
+                    categories = safeBook.categories,
+                    pageCount = safeBook.pageCount,
+                    userId = userRepository.getCurrentUser()?.uid,
+                    googleBookId = safeBook.id
+                )
+                when (bookRepository.saveBook(bookToSave)) {
+                    is Resource.Error -> {
+                        uiState.value = uiState.value.copy(isLoading = false)
+                    }
+
+                    is Resource.Success -> {
+                        uiState.value = uiState.value.copy(isLoading = false, bookSaved = true)
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun onError(errorMessage: String) {
+        uiState.value = uiState.value.copy(isLoading = false)
+        errorFlow.emit(errorMessage)
     }
 }

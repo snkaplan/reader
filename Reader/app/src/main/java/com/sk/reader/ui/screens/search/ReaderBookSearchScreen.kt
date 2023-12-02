@@ -72,9 +72,7 @@ fun ReaderBookSearchScreen(
         ) {
             Column {
                 SearchForm(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp), loading = false
+                    loading = false
                 ) { searchQuery ->
                     viewModel.searchBooks(searchQuery)
                 }
@@ -131,12 +129,13 @@ fun BookRowItem(book: Book, navController: NavController) {
             Column {
                 Text(text = book.title, overflow = TextOverflow.Ellipsis)
                 Text(
-                    text = "Author ${book.authors}",
+                    text = "${stringResource(id = R.string.authors)}: ${book.authors}",
                     overflow = TextOverflow.Clip,
                     style = MaterialTheme.typography.labelMedium
                 )
                 Text(
-                    "Date: ${book.publishedDate}", softWrap = true,
+                    "${stringResource(id = R.string.published)}: ${book.publishedDate}",
+                    softWrap = true,
                     overflow = TextOverflow.Clip,
                     fontStyle = FontStyle.Italic,
                     style = MaterialTheme.typography.titleSmall
@@ -155,7 +154,7 @@ fun BookRowItem(book: Book, navController: NavController) {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SearchForm(modifier: Modifier = Modifier, loading: Boolean, onSearch: (String) -> Unit) {
+fun SearchForm(loading: Boolean, onSearch: (String) -> Unit) {
     val searchQueryState = rememberSaveable {
         mutableStateOf("")
     }
@@ -165,7 +164,7 @@ fun SearchForm(modifier: Modifier = Modifier, loading: Boolean, onSearch: (Strin
     }
     InputField(
         valueState = searchQueryState,
-        labelId = "Search",
+        labelId = stringResource(id = R.string.search),
         enabled = !loading,
         onAction = KeyboardActions {
             if (!valid) return@KeyboardActions

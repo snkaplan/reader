@@ -5,4 +5,5 @@ import com.sk.reader.utils.Resource
 
 interface BookRemoteDataSource {
     suspend fun getBook(id: String): Resource<Item>
+    suspend fun saveBook(book: Map<String, Any>): Resource<Unit>
 }

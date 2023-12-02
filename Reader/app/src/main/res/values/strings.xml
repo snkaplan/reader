@@ -17,4 +17,12 @@
     <string name="reading_list_title">Reading List</string>
     <string name="not_available">N/A</string>
     <string name="search_screen_title">Search Books</string>
+    <string name="book_detail">Book Detail</string>
+    <string name="authors">Authors</string>
+    <string name="page_count">Page Count</string>
+    <string name="categories">Categories</string>
+    <string name="published">Published</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="search">Search</string>
 </resources>

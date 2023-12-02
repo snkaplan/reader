@@ -1,7 +1,7 @@
 package com.sk.reader.model
 
 open class Book(
-    open var id: String,
+    open var id: String? = null,
     open var title: String,
     open var authors: String,
     open var description: String,

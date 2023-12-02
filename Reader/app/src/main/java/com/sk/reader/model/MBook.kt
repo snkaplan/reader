@@ -5,7 +5,7 @@ import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.PropertyName
 
 data class MBook(
-    @Exclude override var id: String,
+    @Exclude override var id: String? = null,
     override var title: String,
     override var authors: String,
     override var description: String,
@@ -45,3 +45,20 @@ data class MBook(
     categories,
     pageCount
 )
+
+fun MBook.toSaveableBookMap(): Map<String, Any> {
+    val bookMap = mutableMapOf<String, Any>()
+    bookMap["title"] = title
+    bookMap["authors"] = authors
+    bookMap["description"] = description
+    bookMap["notes"] = ""
+    bookMap["categories"] = categories
+    bookMap["page_count"] = pageCount.toString()
+    bookMap["thumbnail"] = thumbnail.toString()
+    bookMap["small_thumbnail"] = smallThumbnail.toString()
+    bookMap["published_date"] = publishedDate
+    bookMap["rating"] = 0.0
+    bookMap["google_book_id"] = googleBookId.toString()
+    bookMap["user_id"] = userId.toString()
+    return bookMap
+}

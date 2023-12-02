@@ -18,11 +18,11 @@ fun Item.toBook(): Book {
     return Book(
         this.id,
         this.volumeInfo.title,
-        this.volumeInfo.authors?.joinToString(", ").orEmpty(),
+        this.volumeInfo.authors?.joinToString(", ") ?: "Unknown",
         this.volumeInfo.description.orEmpty(),
         this.volumeInfo.imageLinks?.thumbnail,
         this.volumeInfo.imageLinks?.smallThumbnail,
-        this.volumeInfo.publishedDate.orEmpty(),
+        this.volumeInfo.publishedDate ?: "Unknown",
         this.volumeInfo.categories?.joinToString(" - ").orEmpty(),
         this.volumeInfo.pageCount
     )

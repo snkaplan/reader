@@ -2,9 +2,8 @@ package com.sk.reader.ui.screens.details
 
 import com.sk.reader.model.Book
 
-sealed class BookDetailsScreenState {
-    object Loading : BookDetailsScreenState()
-    object Idle : BookDetailsScreenState()
-    data class Success(val data: Book) : BookDetailsScreenState()
-    data class Error(val message: String) : BookDetailsScreenState()
-}
+data class BookDetailsScreenState(
+    val isLoading: Boolean = false,
+    val book: Book? = null,
+    val bookSaved: Boolean = false
+)

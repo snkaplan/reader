@@ -82,7 +82,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideBookRemoteDataSource(booksApi: BooksApi): BookRemoteDataSource {
-        return BookRemoteDataSourceImpl(booksApi)
+    fun provideBookRemoteDataSource(booksApi: BooksApi, firebaseFirestore: FirebaseFirestore): BookRemoteDataSource {
+        return BookRemoteDataSourceImpl(booksApi, firebaseFirestore)
     }
 }
