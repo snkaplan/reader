@@ -6,5 +6,6 @@ import com.sk.reader.utils.Resource
 
 interface BookRepository {
     suspend fun getBook(id: String): Resource<Item>
+    suspend fun getBookFromFirestore(id: String, userId: String): Resource<Map<String, Any?>>
     suspend fun saveBook(book: MBook): Resource<Unit>
 }

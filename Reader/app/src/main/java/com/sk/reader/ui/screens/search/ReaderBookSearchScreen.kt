@@ -36,6 +36,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
@@ -45,6 +46,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import coil.transform.RoundedCornersTransformation
 import com.sk.reader.R
 import com.sk.reader.model.Book
 import com.sk.reader.ui.components.InputField
@@ -119,7 +122,10 @@ fun BookRowItem(book: Book, navController: NavController) {
         colors = CardDefaults.cardColors(containerColor = Color.White)) {
         Row(modifier = Modifier.padding(5.dp), verticalAlignment = Alignment.Top) {
             Image(
-                painter = rememberAsyncImagePainter(model = book.thumbnail),
+                painter = rememberAsyncImagePainter(
+                    ImageRequest.Builder(LocalContext.current).data(book.thumbnail)
+                        .crossfade(true).transformations(RoundedCornersTransformation()).build()
+                ),
                 contentDescription = "Book image",
                 modifier = Modifier
                     .width(80.dp)

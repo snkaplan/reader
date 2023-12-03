@@ -44,7 +44,20 @@ data class MBook(
     publishedDate,
     categories,
     pageCount
-)
+) {
+    companion object {
+        fun fromFirebaseMap(map: Map<String, Any?>): User {
+            return User(
+                uid = map["user_id"].toString(),
+                name = map["name"].toString(),
+                lastName = map["last_name"].toString(),
+                avatarUrl = map["avatar_url"].toString(),
+                quote = map["quote"].toString(),
+                profession = map["profession"].toString()
+            )
+        }
+    }
+}
 
 fun MBook.toSaveableBookMap(): Map<String, Any> {
     val bookMap = mutableMapOf<String, Any>()

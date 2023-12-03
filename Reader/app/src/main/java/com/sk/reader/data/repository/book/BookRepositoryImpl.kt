@@ -11,6 +11,13 @@ class BookRepositoryImpl(private val bookRemoteDataSource: BookRemoteDataSource)
         return bookRemoteDataSource.getBook(id)
     }
 
+    override suspend fun getBookFromFirestore(
+        id: String,
+        userId: String
+    ): Resource<Map<String, Any?>> {
+        return bookRemoteDataSource.getBookFromFirestore(id, userId)
+    }
+
     override suspend fun saveBook(book: MBook): Resource<Unit> {
         return bookRemoteDataSource.saveBook(book.toSaveableBookMap())
     }

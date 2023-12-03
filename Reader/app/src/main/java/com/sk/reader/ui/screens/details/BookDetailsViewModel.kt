@@ -8,6 +8,8 @@ import com.sk.reader.data.repository.user.UserRepository
 import com.sk.reader.model.MBook
 import com.sk.reader.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -27,16 +29,40 @@ class BookDetailsViewModel @Inject constructor(
     fun getBook(id: String) {
         viewModelScope.launch {
             uiState.value = uiState.value.copy(isLoading = true)
-            when (val result = bookRepository.getBook(id)) {
+            val apiRequest = async { getBookFromApi(id) }
+            val fireStore = async { getBookFromFirestore(id) }
+            awaitAll(apiRequest, fireStore)
+            uiState.value = uiState.value.copy(isLoading = false)
+
+        }
+    }
+
+    private suspend fun getBookFromApi(id: String) {
+        when (val result = bookRepository.getBook(id)) {
+            is Resource.Error -> {
+                uiState.value = uiState.value.copy(isLoading = false)
+            }
+
+            is Resource.Success -> {
+                result.data?.toBook()?.let {
+                    uiState.value = uiState.value.copy(book = it)
+                } ?: kotlin.run {
+                    onError("Error happened try later :/")
+                }
+            }
+        }
+    }
+
+    private suspend fun getBookFromFirestore(id: String) {
+        userRepository.getCurrentUser()?.uid?.let { safeId ->
+            when (val result = bookRepository.getBookFromFirestore(id, safeId)) {
                 is Resource.Error -> {
                     uiState.value = uiState.value.copy(isLoading = false)
                 }
 
                 is Resource.Success -> {
-                    result.data?.toBook()?.let {
-                        uiState.value = uiState.value.copy(isLoading = false, book = it)
-                    } ?: kotlin.run {
-                        onError("Error happened try later :/")
+                    result.data?.let {
+                        uiState.value = uiState.value.copy(bookSaved = true)
                     }
                 }
             }

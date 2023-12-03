@@ -19,6 +19,23 @@ class BookRemoteDataSourceImpl(
         }
     }
 
+    override suspend fun getBookFromFirestore(
+        id: String,
+        userId: String
+    ): Resource<Map<String, Any?>> {
+        return try {
+            val result = firebaseFirestore.collection(BOOKS_TABLE_NAME)
+                .whereEqualTo("google_book_id", id).whereEqualTo("user_id", userId).get().await()
+            if (result.documents.isEmpty().not()) {
+                return Resource.Success(result.documents[0].data)
+            }
+            return Resource.Success(null)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(null, e.message ?: "General exception")
+        }
+    }
+
     override suspend fun saveBook(book: Map<String, Any>): Resource<Unit> {
         return try {
             val documentReference = firebaseFirestore.collection(BOOKS_TABLE_NAME).add(book).await()
