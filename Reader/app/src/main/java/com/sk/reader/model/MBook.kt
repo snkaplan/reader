@@ -6,20 +6,20 @@ import com.google.firebase.firestore.PropertyName
 
 data class MBook(
     @Exclude override var id: String? = null,
-    override var title: String,
-    override var authors: String,
-    override var description: String,
-    override var thumbnail: String?,
+    override var title: String = "",
+    override var authors: String = "",
+    override var description: String = "",
+    override var thumbnail: String? = null,
     @get:PropertyName("small_thumbnail")
     @set:PropertyName("small_thumbnail")
-    override var smallThumbnail: String?,
+    override var smallThumbnail: String? = null,
     @get:PropertyName("published_date")
     @set:PropertyName("published_date")
-    override var publishedDate: String,
-    override var categories: String,
+    override var publishedDate: String = "",
+    override var categories: String = "",
     @get:PropertyName("page_count")
     @set:PropertyName("page_count")
-    override var pageCount: Int,
+    override var pageCount: Int = 0,
     var notes: String? = null,
     var rating: Double? = null,
     @get:PropertyName("started_reading_at")
@@ -44,20 +44,7 @@ data class MBook(
     publishedDate,
     categories,
     pageCount
-) {
-    companion object {
-        fun fromFirebaseMap(map: Map<String, Any?>): User {
-            return User(
-                uid = map["user_id"].toString(),
-                name = map["name"].toString(),
-                lastName = map["last_name"].toString(),
-                avatarUrl = map["avatar_url"].toString(),
-                quote = map["quote"].toString(),
-                profession = map["profession"].toString()
-            )
-        }
-    }
-}
+)
 
 fun MBook.toSaveableBookMap(): Map<String, Any> {
     val bookMap = mutableMapOf<String, Any>()
@@ -66,7 +53,7 @@ fun MBook.toSaveableBookMap(): Map<String, Any> {
     bookMap["description"] = description
     bookMap["notes"] = ""
     bookMap["categories"] = categories
-    bookMap["page_count"] = pageCount.toString()
+    bookMap["page_count"] = pageCount
     bookMap["thumbnail"] = thumbnail.toString()
     bookMap["small_thumbnail"] = smallThumbnail.toString()
     bookMap["published_date"] = publishedDate

@@ -1,5 +1,6 @@
 package com.sk.reader.data.repository.book
 
+import com.google.firebase.firestore.DocumentSnapshot
 import com.sk.reader.data.datasource.book.BookRemoteDataSource
 import com.sk.reader.data.dto.bookdto.Item
 import com.sk.reader.model.MBook
@@ -20,5 +21,9 @@ class BookRepositoryImpl(private val bookRemoteDataSource: BookRemoteDataSource)
 
     override suspend fun saveBook(book: MBook): Resource<Unit> {
         return bookRemoteDataSource.saveBook(book.toSaveableBookMap())
+    }
+
+    override suspend fun getUserBooks(userId: String): Resource<List<DocumentSnapshot>> {
+        return bookRemoteDataSource.getUserBooks(userId)
     }
 }

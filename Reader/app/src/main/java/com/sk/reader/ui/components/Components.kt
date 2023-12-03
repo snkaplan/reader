@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material3.Card
@@ -41,13 +40,12 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.sk.reader.R
-import com.sk.reader.model.Book
+import com.sk.reader.model.MBook
 import com.sk.reader.ui.theme.Light_Blue
 import com.sk.reader.ui.theme.Light_Red
 
@@ -146,7 +144,7 @@ fun TitleItem(modifier: Modifier = Modifier, label: String) {
 
 @Composable
 fun ListCard(
-    book: Book, cardRadius: Dp = 30.dp, onClickDetails: (String) -> Unit = {}
+    book: MBook, cardRadius: Dp = 30.dp, onClickDetails: (String) -> Unit = {}
 ) {
     Card(
         shape = RoundedCornerShape(cardRadius),
@@ -182,13 +180,13 @@ fun ListCard(
             }
             Column(modifier = Modifier.padding(10.dp)) {
                 Text(
-                    text = book.title.toString(),
+                    text = book.title,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = book.authors.toString(),
+                    text = book.authors,
                     style = MaterialTheme.typography.labelSmall
                 )
             }

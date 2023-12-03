@@ -1,5 +1,6 @@
 package com.sk.reader.data.datasource.book
 
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.sk.reader.data.dto.bookdto.Item
 import com.sk.reader.data.network.BooksApi
@@ -34,6 +35,22 @@ class BookRemoteDataSourceImpl(
             e.printStackTrace()
             Resource.Error(null, e.message ?: "General exception")
         }
+    }
+
+    override suspend fun getUserBooks(userId: String): Resource<List<DocumentSnapshot>> {
+        return try {
+            val result =
+                firebaseFirestore.collection(BOOKS_TABLE_NAME).whereEqualTo("user_id", userId).get()
+                    .await()
+            if (result.documents.isEmpty().not()) {
+                return Resource.Success(result.documents)
+            }
+            return Resource.Success(null)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(null, e.message ?: "General exception")
+        }
+
     }
 
     override suspend fun saveBook(book: Map<String, Any>): Resource<Unit> {

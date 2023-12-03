@@ -36,7 +36,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.text.HtmlCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
@@ -49,7 +48,7 @@ import com.sk.reader.ui.components.RoundedButton
 @Composable
 fun ReaderBookDetailsScreen(
     navController: NavController, bookId: String,
-    viewModel: BookDetailsViewModel = hiltViewModel()
+    viewModel: BookDetailsViewModel
 ) {
     LaunchedEffect(key1 = true) {
         viewModel.getBook(bookId)
