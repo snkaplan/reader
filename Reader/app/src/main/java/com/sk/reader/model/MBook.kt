@@ -46,18 +46,20 @@ data class MBook(
     pageCount
 )
 
-fun MBook.toSaveableBookMap(): Map<String, Any> {
-    val bookMap = mutableMapOf<String, Any>()
+fun MBook.toSaveableBookMap(): Map<String, Any?> {
+    val bookMap = mutableMapOf<String, Any?>()
     bookMap["title"] = title
     bookMap["authors"] = authors
     bookMap["description"] = description
-    bookMap["notes"] = ""
+    bookMap["notes"] = notes
     bookMap["categories"] = categories
     bookMap["page_count"] = pageCount
     bookMap["thumbnail"] = thumbnail.toString()
     bookMap["small_thumbnail"] = smallThumbnail.toString()
     bookMap["published_date"] = publishedDate
-    bookMap["rating"] = 0.0
+    bookMap["rating"] = rating ?: 0.0
+    bookMap["started_reading_at"] = startedReading
+    bookMap["finishedReading"] = finishedReading
     bookMap["google_book_id"] = googleBookId.toString()
     bookMap["user_id"] = userId.toString()
     return bookMap

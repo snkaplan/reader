@@ -1,6 +1,5 @@
 package com.sk.reader.ui.screens.home
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -57,7 +56,9 @@ fun ReaderHomeScreen(
     val authState: AuthState by authViewModel.authState.collectAsStateWithLifecycle()
     val userState: User? by authViewModel.user.collectAsStateWithLifecycle()
     val homeScreenState: HomeScreenState by homeViewModel.uiState.collectAsStateWithLifecycle()
-    homeViewModel.getUserBooks()
+    LaunchedEffect(key1 = true) {
+        homeViewModel.getUserBooks()
+    }
     LaunchedEffect(authState) {
         when (authState) {
             is AuthState.SignedOut -> {
@@ -150,12 +151,16 @@ fun HomeContent(
 
 @Composable
 fun ReadingRightNowArea(books: List<MBook?>, navController: NavController) {
-    HorizontalScrollableComponent(books) {}
+    HorizontalScrollableComponent(books) {
+        navController.navigate(ReaderScreens.UpdateScreen.name + "/$it")
+    }
 }
 
 @Composable
 fun ReadingListArea(books: List<MBook?>, navController: NavController) {
-    HorizontalScrollableComponent(books) {}
+    HorizontalScrollableComponent(books) {
+        navController.navigate(ReaderScreens.UpdateScreen.name + "/$it")
+    }
 }
 
 @Composable

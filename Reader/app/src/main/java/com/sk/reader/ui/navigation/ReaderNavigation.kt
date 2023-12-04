@@ -17,6 +17,7 @@ import com.sk.reader.ui.screens.login.ReaderLoginScreen
 import com.sk.reader.ui.screens.search.ReaderBookSearchScreen
 import com.sk.reader.ui.screens.search.SearchViewModel
 import com.sk.reader.ui.screens.stats.ReaderStatsScreen
+import com.sk.reader.ui.screens.update.BookUpdateViewModel
 import com.sk.reader.ui.screens.update.ReaderBookUpdateScreen
 
 @Composable
@@ -57,8 +58,14 @@ fun ReaderNavigation(authViewModel: AuthViewModel) {
                 )
             }
         }
-        composable(ReaderScreens.UpdateScreen.name) {
-            ReaderBookUpdateScreen(navController = navController)
+        val updateName = ReaderScreens.UpdateScreen.name
+        composable("$updateName/{bookId}", arguments = listOf(navArgument("bookId") {
+            type = NavType.StringType
+        })) { backStackEntry ->
+            backStackEntry.arguments?.getString("bookId")?.let {
+                val bookUpdateViewModel: BookUpdateViewModel = hiltViewModel()
+                ReaderBookUpdateScreen(navController = navController, it, bookUpdateViewModel)
+            }
         }
     }
 }

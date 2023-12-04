@@ -106,6 +106,8 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
+
+    implementation("androidx.navigation:navigation-compose:2.7.5")
 }
 
 // Allow references to generated code

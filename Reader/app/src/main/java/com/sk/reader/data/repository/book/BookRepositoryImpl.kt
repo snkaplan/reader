@@ -12,11 +12,18 @@ class BookRepositoryImpl(private val bookRemoteDataSource: BookRemoteDataSource)
         return bookRemoteDataSource.getBook(id)
     }
 
-    override suspend fun getBookFromFirestore(
+    override suspend fun getBookFromFirestoreByGoogleId(
         id: String,
         userId: String
     ): Resource<Map<String, Any?>> {
-        return bookRemoteDataSource.getBookFromFirestore(id, userId)
+        return bookRemoteDataSource.getBookFromFirestoreByGoogleId(id, userId)
+    }
+
+    override suspend fun getBookFromFirestoreById(
+        id: String,
+        userId: String
+    ): Resource<DocumentSnapshot> {
+        return bookRemoteDataSource.getBookFromFirestoreById(id, userId)
     }
 
     override suspend fun saveBook(book: MBook): Resource<Unit> {

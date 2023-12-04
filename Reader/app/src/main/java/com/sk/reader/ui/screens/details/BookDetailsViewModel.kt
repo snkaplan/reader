@@ -55,7 +55,7 @@ class BookDetailsViewModel @Inject constructor(
 
     private suspend fun getBookFromFirestore(id: String) {
         userRepository.getCurrentUser()?.uid?.let { safeId ->
-            when (val result = bookRepository.getBookFromFirestore(id, safeId)) {
+            when (val result = bookRepository.getBookFromFirestoreByGoogleId(id, safeId)) {
                 is Resource.Error -> {
                     uiState.value = uiState.value.copy(isLoading = false)
                 }
