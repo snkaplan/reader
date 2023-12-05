@@ -14,4 +14,6 @@ interface BookRemoteDataSource {
     suspend fun getBookFromFirestoreById(id: String, userId: String): Resource<DocumentSnapshot>
     suspend fun getUserBooks(userId: String): Resource<List<DocumentSnapshot>>
     suspend fun saveBook(book: Map<String, Any?>): Resource<Unit>
+    suspend fun updateBook(docId: String, updatedFields: Map<String, Any?>): Resource<Unit>
+    suspend fun deleteBook(docId: String): Resource<Unit>
 }

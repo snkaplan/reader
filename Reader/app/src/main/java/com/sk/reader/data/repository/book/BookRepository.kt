@@ -15,4 +15,6 @@ interface BookRepository {
     suspend fun getBookFromFirestoreById(id: String, userId: String): Resource<DocumentSnapshot>
     suspend fun saveBook(book: MBook): Resource<Unit>
     suspend fun getUserBooks(userId: String): Resource<List<DocumentSnapshot>>
+    suspend fun updateBook(docId: String, updatedFields: Map<String, Any?>): Resource<Unit>
+    suspend fun deleteBook(docId: String): Resource<Unit>
 }

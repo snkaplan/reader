@@ -28,9 +28,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -45,12 +48,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.google.firebase.Timestamp
 import com.sk.reader.R
 import com.sk.reader.model.MBook
+import com.sk.reader.ui.components.CustomAlertDialog
 import com.sk.reader.ui.components.InputField
 import com.sk.reader.ui.components.RatingBar
 import com.sk.reader.ui.components.ReaderAppTopBar
 import com.sk.reader.ui.components.RoundedButton
+import com.sk.reader.utils.formatDate
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,6 +73,23 @@ fun ReaderBookUpdateScreen(
     }
     LaunchedEffect(key1 = bookId) {
         viewModel.getBookFromFirestoreById(bookId)
+    }
+    LaunchedEffect(key1 = true) {
+        viewModel.events.collectLatest { event ->
+            when (event) {
+                BookUpdateScreenEvents.BookDeletedSuccessfully -> navController.popBackStack()
+            }
+        }
+    }
+    val openDialog = remember { mutableStateOf(false) }
+    if (openDialog.value) {
+        CustomAlertDialog(
+            title = "Delete Book",
+            description = "Are you sure about this?",
+            confirmText = "Yes",
+            dismissText = "Cancel",
+            onDismiss = { openDialog.value = false },
+            onConfirm = { viewModel.deleteBook() })
     }
     Scaffold(
         topBar = {
@@ -85,6 +109,12 @@ fun ReaderBookUpdateScreen(
                 CircularProgressIndicator(modifier = Modifier.size(25.dp))
             } else {
                 uiState.mBook?.let { safeBook ->
+                    val ratingVal = rememberSaveable {
+                        mutableIntStateOf(safeBook.rating?.toInt() ?: 0)
+                    }
+                    val notes = rememberSaveable {
+                        mutableStateOf(safeBook.notes ?: "")
+                    }
                     Column(
                         modifier = Modifier.padding(3.dp),
                         verticalArrangement = Arrangement.Top,
@@ -102,86 +132,22 @@ fun ReaderBookUpdateScreen(
                                 BookCard(book = safeBook) {}
                             }
                         }
-                        FormField(isLoading = uiState.isLoading, book = safeBook)
+                        NotesField(
+                            notesState = notes,
+                            isLoading = uiState.isLoading,
+                        )
+                        ReadInfoField(
+                            safeBook.startedReading,
+                            safeBook.finishedReading,
+                            uiState.isLoading,
+                            viewModel
+                        )
+                        RatingField(ratingState = ratingVal)
+                        ButtonsField(onUpdateClick = {}, onDeleteClick = {
+                            openDialog.value = true
+                        })
                     }
                 }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalComposeUiApi::class)
-@Composable
-fun FormField(modifier: Modifier = Modifier, isLoading: Boolean, book: MBook) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(3.dp)
-            .background(Color.White, CircleShape)
-            .padding(horizontal = 20.dp, vertical = 12.dp)
-    ) {
-        val notes = rememberSaveable {
-            mutableStateOf(book.notes ?: "")
-        }
-        val readingStarted = rememberSaveable {
-            mutableStateOf(book.startedReading != null)
-        }
-        val readingFinished = rememberSaveable {
-            mutableStateOf(book.finishedReading != null)
-        }
-        val ratingVal = rememberSaveable {
-            mutableIntStateOf(book.rating?.toInt() ?: 0)
-        }
-        val keyboardController = LocalSoftwareKeyboardController.current
-        InputField(
-            valueState = notes,
-            labelId = "Enter Your Thoughts",
-            enabled = isLoading.not(),
-            isSingleLine = false,
-            onAction = KeyboardActions {
-                keyboardController?.hide()
-            }
-        )
-        Row(
-            modifier = Modifier
-                .padding(4.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            TextButton(onClick = {
-                readingStarted.value = true
-            }, enabled = readingStarted.value.not()) {
-                Text(text = if (readingStarted.value.not()) "Start Reading" else "Started on ${book.startedReading}")
-            }
-            TextButton(onClick = {
-                readingFinished.value = true
-            }, enabled = readingFinished.value.not() && readingStarted.value) {
-                Text(text = if (readingFinished.value.not()) "Mark as Read" else "Already ended")
-            }
-        }
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text = "Rating", modifier = Modifier.padding(bottom = 3.dp))
-            RatingBar(rating = ratingVal.intValue) { rating ->
-                ratingVal.intValue = rating
-            }
-        }
-        Row(
-            modifier = Modifier
-                .padding(24.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            RoundedButton(label = "Update") {
-
-            }
-            RoundedButton(label = "Delete") {
-
             }
         }
     }
@@ -237,6 +203,85 @@ fun BookCard(book: MBook, onClick: () -> Unit) {
                     modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 0.dp, bottom = 8.dp)
                 )
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun NotesField(isLoading: Boolean, notesState: MutableState<String>) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    InputField(
+        modifier = Modifier.padding(horizontal = 10.dp),
+        valueState = notesState,
+        labelId = "Enter Your Thoughts",
+        enabled = isLoading.not(),
+        isSingleLine = false,
+        onAction = KeyboardActions {
+            keyboardController?.hide()
+        }
+    )
+}
+
+@Composable
+fun ReadInfoField(
+    startedReadingTs: Timestamp?,
+    finishedReadingTs: Timestamp?,
+    isLoading: Boolean,
+    viewModel: BookUpdateViewModel
+) {
+    Row(
+        modifier = Modifier
+            .padding(4.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        if (isLoading) {
+            CircularProgressIndicator(modifier = Modifier.size(25.dp))
+        } else {
+            TextButton(onClick = {
+                viewModel.startReading()
+            }, enabled = startedReadingTs == null) {
+                Text(text = if (startedReadingTs == null) "Start Reading" else "Started on ${startedReadingTs.formatDate()}")
+            }
+            TextButton(onClick = {
+                viewModel.endReading()
+            }, enabled = finishedReadingTs == null && startedReadingTs != null) {
+                Text(text = if (finishedReadingTs == null) "Mark as Read" else "Finished on")
+            }
+        }
+    }
+}
+
+@Composable
+fun RatingField(ratingState: MutableIntState) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "Rating", modifier = Modifier.padding(bottom = 3.dp))
+        RatingBar(rating = ratingState.intValue) { rating ->
+            ratingState.intValue = rating
+        }
+    }
+}
+
+@Composable
+fun ButtonsField(onUpdateClick: () -> Unit, onDeleteClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .padding(24.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        RoundedButton(label = "Update") {
+            onUpdateClick.invoke()
+        }
+        RoundedButton(label = "Delete") {
+            onDeleteClick.invoke()
         }
     }
 }

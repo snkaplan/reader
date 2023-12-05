@@ -33,4 +33,15 @@ class BookRepositoryImpl(private val bookRemoteDataSource: BookRemoteDataSource)
     override suspend fun getUserBooks(userId: String): Resource<List<DocumentSnapshot>> {
         return bookRemoteDataSource.getUserBooks(userId)
     }
+
+    override suspend fun updateBook(
+        docId: String,
+        updatedFields: Map<String, Any?>
+    ): Resource<Unit> {
+        return bookRemoteDataSource.updateBook(docId, updatedFields)
+    }
+
+    override suspend fun deleteBook(docId: String): Resource<Unit> {
+        return bookRemoteDataSource.deleteBook(docId)
+    }
 }

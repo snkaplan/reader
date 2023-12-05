@@ -80,4 +80,29 @@ class BookRemoteDataSourceImpl(
             Resource.Error(null, e.message ?: "General exception")
         }
     }
+
+    override suspend fun updateBook(
+        docId: String,
+        updatedFields: Map<String, Any?>
+    ): Resource<Unit> {
+        return try {
+            firebaseFirestore.collection(BOOKS_TABLE_NAME).document(docId).update(updatedFields)
+                .await()
+            return Resource.Success(Unit)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(null, e.message ?: "General exception")
+        }
+    }
+
+    override suspend fun deleteBook(docId: String): Resource<Unit> {
+        return try {
+            firebaseFirestore.collection(BOOKS_TABLE_NAME).document(docId).delete()
+                .await()
+            return Resource.Success(Unit)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(null, e.message ?: "General exception")
+        }
+    }
 }
