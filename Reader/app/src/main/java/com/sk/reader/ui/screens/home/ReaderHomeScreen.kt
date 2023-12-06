@@ -30,6 +30,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -151,27 +153,53 @@ fun HomeContent(
 
 @Composable
 fun ReadingRightNowArea(books: List<MBook?>, navController: NavController) {
-    HorizontalScrollableComponent(books) {
+    val readingNowBooks = books.filter { mBook ->
+        mBook?.startedReading != null && mBook.finishedReading == null
+    }
+    HorizontalScrollableComponent(readingNowBooks, "Start reading some books") {
         navController.navigate(ReaderScreens.UpdateScreen.name + "/$it")
     }
 }
 
 @Composable
 fun ReadingListArea(books: List<MBook?>, navController: NavController) {
-    HorizontalScrollableComponent(books) {
+    val addedBooks = books.filter { mBook ->
+        mBook?.startedReading == null && mBook?.finishedReading == null
+    }
+    HorizontalScrollableComponent(
+        addedBooks,
+        "Go search some books and add to your list"
+    ) {
         navController.navigate(ReaderScreens.UpdateScreen.name + "/$it")
     }
 }
 
 @Composable
-fun HorizontalScrollableComponent(listOfBook: List<MBook?>, onCardClicked: (String) -> Unit) {
-    LazyRow(
-        contentPadding = PaddingValues(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        items(listOfBook) {
-            it?.let { safeBook ->
-                ListCard(safeBook) { id -> onCardClicked.invoke(id) }
+fun HorizontalScrollableComponent(
+    listOfBook: List<MBook?>,
+    emptyViewText: String,
+    onCardClicked: (String) -> Unit
+) {
+    if (listOfBook.isEmpty()) {
+        Surface(modifier = Modifier.padding(25.dp)) {
+            Text(
+                text = emptyViewText,
+                style = TextStyle(
+                    color = Color.Red.copy(alpha = 0.4f),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp
+                )
+            )
+        }
+    } else {
+        LazyRow(
+            contentPadding = PaddingValues(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(listOfBook) {
+                it?.let { safeBook ->
+                    ListCard(safeBook) { id -> onCardClicked.invoke(id) }
+                }
             }
         }
     }

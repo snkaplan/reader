@@ -189,7 +189,7 @@ fun ListCard(
                         imageVector = Icons.Rounded.FavoriteBorder,
                         contentDescription = "Fav Icon"
                     )
-                    RatingItem(score = 3.5)
+                    RatingItem(score = book.rating ?: 0.0)
                 }
             }
             Column(modifier = Modifier.padding(10.dp)) {
@@ -209,7 +209,11 @@ fun ListCard(
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.Bottom
             ) {
-                RoundedButton("Reading", radius = 70)
+                RoundedButton(
+                    if (book.startedReading == null) stringResource(id = R.string.not_yet) else stringResource(
+                        id = R.string.reading
+                    ), radius = 70
+                )
             }
         }
     }

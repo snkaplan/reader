@@ -37,4 +37,6 @@
     <string name="started_reading_on">Started on %1s</string>
     <string name="finished_on">Finished on %1s</string>
     <string name="rating">Rating</string>
+    <string name="reading">Reading</string>
+    <string name="not_yet">Not Yet</string>
 </resources>
