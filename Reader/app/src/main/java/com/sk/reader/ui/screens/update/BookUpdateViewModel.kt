@@ -127,4 +127,33 @@ class BookUpdateViewModel @Inject constructor(
             }
         }
     }
+
+    fun updateBook(rating: Int, notes: String) {
+        viewModelScope.launch {
+            uiState.value.mBook?.id?.let { safeId ->
+                uiState.value = uiState.value.copy(isLoading = true)
+                when (val result = bookRepository.updateBook(
+                    safeId,
+                    mapOf("rating" to rating, "notes" to notes)
+                )) {
+                    is Resource.Error -> {
+                        onError(result.message)
+                    }
+
+                    is Resource.Success -> {
+                        result.data?.let {
+                            uiState.value =
+                                uiState.value.copy(
+                                    mBook = uiState.value.mBook?.copy(
+                                        rating = rating.toDouble(),
+                                        notes = notes
+                                    ),
+                                    isLoading = false
+                                )
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

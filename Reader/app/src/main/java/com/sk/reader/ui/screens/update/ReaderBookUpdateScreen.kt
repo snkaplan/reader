@@ -1,7 +1,6 @@
 package com.sk.reader.ui.screens.update
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -84,10 +83,10 @@ fun ReaderBookUpdateScreen(
     val openDialog = remember { mutableStateOf(false) }
     if (openDialog.value) {
         CustomAlertDialog(
-            title = "Delete Book",
-            description = "Are you sure about this?",
-            confirmText = "Yes",
-            dismissText = "Cancel",
+            title = stringResource(id = R.string.delete_book),
+            description = stringResource(id = R.string.delete_book_modal_desc),
+            confirmText = stringResource(id = R.string.yes),
+            dismissText = stringResource(id = R.string.cancel),
             onDismiss = { openDialog.value = false },
             onConfirm = { viewModel.deleteBook() })
     }
@@ -143,7 +142,9 @@ fun ReaderBookUpdateScreen(
                             viewModel
                         )
                         RatingField(ratingState = ratingVal)
-                        ButtonsField(onUpdateClick = {}, onDeleteClick = {
+                        ButtonsField(onUpdateClick = {
+                            viewModel.updateBook(ratingVal.intValue, notes.value)
+                        }, onDeleteClick = {
                             openDialog.value = true
                         })
                     }
@@ -214,7 +215,7 @@ fun NotesField(isLoading: Boolean, notesState: MutableState<String>) {
     InputField(
         modifier = Modifier.padding(horizontal = 10.dp),
         valueState = notesState,
-        labelId = "Enter Your Thoughts",
+        labelId = stringResource(id = R.string.notes_field_label),
         enabled = isLoading.not(),
         isSingleLine = false,
         onAction = KeyboardActions {
@@ -243,12 +244,20 @@ fun ReadInfoField(
             TextButton(onClick = {
                 viewModel.startReading()
             }, enabled = startedReadingTs == null) {
-                Text(text = if (startedReadingTs == null) "Start Reading" else "Started on ${startedReadingTs.formatDate()}")
+                Text(
+                    text = if (startedReadingTs == null) stringResource(id = R.string.start_reading) else stringResource(
+                        id = R.string.started_reading_on, startedReadingTs.formatDate()
+                    )
+                )
             }
             TextButton(onClick = {
                 viewModel.endReading()
             }, enabled = finishedReadingTs == null && startedReadingTs != null) {
-                Text(text = if (finishedReadingTs == null) "Mark as Read" else "Finished on")
+                Text(
+                    text = if (finishedReadingTs == null) stringResource(id = R.string.mark_as_read) else stringResource(
+                        id = R.string.finished_on, finishedReadingTs.formatDate()
+                    )
+                )
             }
         }
     }
@@ -261,7 +270,10 @@ fun RatingField(ratingState: MutableIntState) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Rating", modifier = Modifier.padding(bottom = 3.dp))
+        Text(
+            text = stringResource(id = R.string.rating),
+            modifier = Modifier.padding(bottom = 3.dp)
+        )
         RatingBar(rating = ratingState.intValue) { rating ->
             ratingState.intValue = rating
         }
@@ -277,10 +289,10 @@ fun ButtonsField(onUpdateClick: () -> Unit, onDeleteClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        RoundedButton(label = "Update") {
+        RoundedButton(label = stringResource(id = R.string.update)) {
             onUpdateClick.invoke()
         }
-        RoundedButton(label = "Delete") {
+        RoundedButton(label = stringResource(id = R.string.delete)) {
             onDeleteClick.invoke()
         }
     }

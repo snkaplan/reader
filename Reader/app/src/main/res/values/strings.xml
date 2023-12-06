@@ -25,5 +25,16 @@
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="search">Search</string>
+    <string name="update">Update</string>
+    <string name="delete">Delete</string>
     <string name="book_update">Update Book</string>
+    <string name="delete_book">Delete Book</string>
+    <string name="delete_book_modal_desc">Are you sure about this?</string>
+    <string name="yes">Yes</string>
+    <string name="notes_field_label">Enter Your Thoughts</string>
+    <string name="start_reading">Start Reading</string>
+    <string name="mark_as_read">Mark as Read</string>
+    <string name="started_reading_on">Started on %1s</string>
+    <string name="finished_on">Finished on %1s</string>
+    <string name="rating">Rating</string>
 </resources>
