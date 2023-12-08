@@ -55,6 +55,7 @@ import com.sk.reader.ui.components.InputField
 import com.sk.reader.ui.components.RatingBar
 import com.sk.reader.ui.components.ReaderAppTopBar
 import com.sk.reader.ui.components.RoundedButton
+import com.sk.reader.ui.navigation.BOOK_UPDATED
 import com.sk.reader.utils.formatDate
 import kotlinx.coroutines.flow.collectLatest
 
@@ -65,6 +66,9 @@ fun ReaderBookUpdateScreen(
     bookId: String,
     viewModel: BookUpdateViewModel
 ) {
+    val isBookUpdated = remember {
+        mutableStateOf(false)
+    }
     val uiState: BookUpdateScreenState by viewModel.uiState.collectAsStateWithLifecycle()
     val errorFlow: String by viewModel.errorFlow.collectAsStateWithLifecycle("")
     if (errorFlow.isEmpty().not()) {
@@ -76,7 +80,13 @@ fun ReaderBookUpdateScreen(
     LaunchedEffect(key1 = true) {
         viewModel.events.collectLatest { event ->
             when (event) {
-                BookUpdateScreenEvents.BookDeletedSuccessfully -> navController.popBackStack()
+                BookUpdateScreenEvents.BookDeletedSuccessfully -> {
+                    isBookUpdated.value = true
+                    goBack(
+                        navController,
+                        isBookUpdated.value
+                    )
+                }
             }
         }
     }
@@ -96,7 +106,12 @@ fun ReaderBookUpdateScreen(
                 stringResource(id = R.string.book_update),
                 leftIcon = Icons.Default.ArrowBack,
                 leftIconTint = Color.Red.copy(alpha = 0.7f),
-                onLeftIconClicked = { navController.popBackStack() }
+                onLeftIconClicked = {
+                    goBack(
+                        navController,
+                        isBookUpdated.value
+                    )
+                }
             )
         }) {
         Surface(
@@ -143,6 +158,7 @@ fun ReaderBookUpdateScreen(
                         )
                         RatingField(ratingState = ratingVal)
                         ButtonsField(onUpdateClick = {
+                            isBookUpdated.value = true
                             viewModel.updateBook(ratingVal.intValue, notes.value)
                         }, onDeleteClick = {
                             openDialog.value = true
@@ -296,4 +312,12 @@ fun ButtonsField(onUpdateClick: () -> Unit, onDeleteClick: () -> Unit) {
             onDeleteClick.invoke()
         }
     }
+}
+
+fun goBack(navController: NavController, isBookUpdated: Boolean = false) {
+    navController.previousBackStackEntry?.savedStateHandle?.set(
+        BOOK_UPDATED,
+        isBookUpdated
+    )
+    navController.popBackStack()
 }

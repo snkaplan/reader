@@ -39,4 +39,9 @@
     <string name="rating">Rating</string>
     <string name="reading">Reading</string>
     <string name="not_yet">Not Yet</string>
+    <string name="profile">Profile</string>
+    <string name="hello_message">Hi, %1s</string>
+    <string name="your_stats">Your Stats</string>
+    <string name="reading_stats">Your\'re reading: %1s books</string>
+    <string name="have_read_stats">You\'ve read: %1s books.</string>
 </resources>

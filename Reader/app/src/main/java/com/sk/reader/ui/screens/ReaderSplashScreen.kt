@@ -39,7 +39,6 @@ fun ReaderSplashScreen(navController: NavController, authViewModel: AuthViewMode
         scale.animateTo(0.9f, animationSpec = tween(800, easing = {
             OvershootInterpolator(8f).getInterpolation(it)
         }))
-        delay(1000L)
         if (authViewModel.getCurrentUser()?.email.isNullOrEmpty().not()) {
             authViewModel.getUser()
             navController.navigate(ReaderScreens.ReaderHomeScreen.name) {

@@ -20,15 +20,17 @@ import com.sk.reader.ui.screens.stats.ReaderStatsScreen
 import com.sk.reader.ui.screens.update.BookUpdateViewModel
 import com.sk.reader.ui.screens.update.ReaderBookUpdateScreen
 
+const val BOOK_UPDATED = "BOOK_UPDATED"
+
 @Composable
 fun ReaderNavigation(authViewModel: AuthViewModel) {
     val navController = rememberNavController()
+    val homeViewModel: HomeViewModel = hiltViewModel()
     NavHost(navController = navController, startDestination = ReaderScreens.SplashScreen.name) {
         composable(ReaderScreens.SplashScreen.name) {
             ReaderSplashScreen(navController = navController, authViewModel = authViewModel)
         }
         composable(ReaderScreens.ReaderHomeScreen.name) {
-            val homeViewModel: HomeViewModel = hiltViewModel()
             ReaderHomeScreen(
                 navController = navController,
                 authViewModel = authViewModel,
@@ -38,8 +40,14 @@ fun ReaderNavigation(authViewModel: AuthViewModel) {
         composable(ReaderScreens.LoginScreen.name) {
             ReaderLoginScreen(navController = navController, authViewModel = authViewModel)
         }
-        composable(ReaderScreens.ReaderStatsScreen.name) {
-            ReaderStatsScreen(navController = navController)
+        composable(ReaderScreens.ReaderStatsScreen.name) { entry ->
+            val refreshList = entry.savedStateHandle.get<Boolean>(BOOK_UPDATED)
+            ReaderStatsScreen(
+                navController = navController,
+                authViewModel,
+                homeViewModel,
+                refreshList ?: false
+            )
         }
         composable(ReaderScreens.SearchScreen.name) {
             val searchViewModel: SearchViewModel = hiltViewModel()
